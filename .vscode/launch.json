@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "bix_ui_design3",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "bix_ui_design3 (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "bix_ui_design3 (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "bix_infra",
+            "cwd": "bix_infra",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "bix_infra (profile mode)",
+            "cwd": "bix_infra",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "bix_infra (release mode)",
+            "cwd": "bix_infra",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
