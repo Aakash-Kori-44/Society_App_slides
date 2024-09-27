@@ -1,74 +1,161 @@
 import 'package:flutter/material.dart';
-import 'share_invite.dart';
-class SelectFlat extends StatefulWidget {
-  const SelectFlat({super.key});
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _SelectFlatState createState() => _SelectFlatState();
+void main() {
+  runApp(MyApp());
 }
 
-class _SelectFlatState extends State<SelectFlat> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: GymHomePage(),
+    );
+  }
+}
+
+class GymHomePage extends StatefulWidget {
+  @override
+  _GymHomePageState createState() => _GymHomePageState();
+}
+
+class _GymHomePageState extends State<GymHomePage> {
+  late PageController _pageController;
   int _currentPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.6); // Adjust viewportFraction for SlideView
+    _pageController.addListener(() {
+      setState(() {
+        _currentPageIndex = _pageController.page!.round();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0),
-        child: SingleChildScrollView(
+      backgroundColor: Colors.grey[900],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(13, 30, 13, 13),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.person_2_rounded, color: Color(0xFF5D5D5D), size: 35),
-                        onPressed: () {
-                    
-                        },
+              // Top section (replacing the AppBar)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/pic.png'), // Replace with your profile image
+                      radius: 28,
+                    ),
+                    Text(
+                      "FIT-TO-BE",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
                       ),
-                      _buildDropdownButton(),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.search, color: Color(0xFFF7C51E), size: 35),
+                    ),
+                    // Search button with Border and Radius
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        border: Border.all(color: Colors.white, width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.search, color: Colors.white),
                         onPressed: () {},
+                        iconSize: 28,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.notifications),
-                        onPressed: () {},
-                      ),
-                      const CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.person),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
+              // Exercise sections with the more_horiz icon on the right side of the section title
+              sectionTitleWithIcon('Exercises'),
+              exerciseCard('Full Body', '50+ Tasks', '30 Min', 'assets/images/Flogo.png'),
+              sectionTitleWithIcon('Biceps Exercises'),
+              Container(
+                height: 200,
+                child: PageView(
+                  controller: _pageController,
+                  children: [
+                    bicepsExerciseCard('Biceps Exercise 1', '30 Min', 'assets/images/Flogo.png'),
+                    bicepsExerciseCard('Biceps Exercise 2', '25 Min', 'assets/images/Flogo.png'),
+                    bicepsExerciseCard('Biceps Exercise 3', '40 Min', 'assets/images/Flogo.png'),
+                  ],
+                ),
+              ),
+              // Dots Indicator
+              SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildHeaderItem(Icons.home, 'Home', 'assets/images/home.png', 'Gate Update', 58, false),
-                  _buildHeaderItem(Icons.attach_money, 'Payments', 'assets/images/money_img.png', 'MY Bills', 58, true),
-                  _buildHeaderItem(Icons.location_city, 'Society', 'assets/images/society.png', 'MY Society', 58, false, showNewLabel: true),
-                  _buildHeaderItem(Icons.star, 'Favorites', 'assets/images/star_img.png', 'Explore', 58, false),
-                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    width: 8.0,
+                    height: 8.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentPageIndex == index ? Colors.white : Colors.white.withOpacity(0.5),
+                    ),
+                  );
+                }),
               ),
-              const SizedBox(height: 16),
-              _buildVisitorSection(),
-              const SizedBox(height: 16),
-              _buildServicesSection(),
-              const SizedBox(height: 16),
-              _buildSlideView(),
+              sectionTitleWithIcon('Abs Exercises'),
+              exerciseCard('Abs', '', '40 Min', 'assets/images/Flogo.png'),
+              _buildSlideView(), // Added SlideView
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.yellow,
+        child: Icon(Icons.add, color: Colors.black),
+        onPressed: () {},
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.black,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 10,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.yellow),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.fitness_center, color: Colors.white),
+                onPressed: () {},
+              ),
+              SizedBox(width: 50), // Space for the FAB
+              IconButton(
+                icon: Icon(Icons.health_and_safety, color: Colors.white),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.calculate, color: Colors.white),
+                onPressed: () {},
+              ),
             ],
           ),
         ),
@@ -76,133 +163,78 @@ class _SelectFlatState extends State<SelectFlat> {
     );
   }
 
-  Widget _buildHeaderItem(
-    IconData icon,
-    String title,
-    String imagePath,
-    String actionText,
-    double imageSize,
-    bool showOfferLabel,
-    {bool showNewLabel = false}
-  ) {
-    bool showOffer = showOfferLabel;
-    bool showNew = showNewLabel;
+  // Function to create the section title with more_horiz icon on the right
+  Widget sectionTitleWithIcon(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Icon(Icons.more_horiz, color: Colors.white), // Align more_horiz icon with text
+        ],
+      ),
+    );
+  }
 
-    return SizedBox(
-      width: 82,
-      height: 120,
+  Widget exerciseCard(String title, String subtitle, String duration, String imagePath) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0), // Removed horizontal margin
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Stack(
         children: [
-          Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    showOffer = !showOffer;
-                    showNew = !showNew;
-                  });
-                },
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.all(8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(23),
-                      side: const BorderSide(
-                        color: Color(0xFF707070),
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        imagePath,
-                        width: imageSize,
-                        height: imageSize,
-                      ),
-                      const SizedBox(height: 15),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                actionText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Color(0xFFFF725E)),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 0,
-            left: 7,
-            right: 11,
-            child: Visibility(
-              visible: showOffer && showOfferLabel,
-              child: GestureDetector(
-                onTap: () {},
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF707070), width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Container(
-                    height: 25,
-                    padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFF725E),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Offers',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.asset(
+              imagePath,
+              height: 180,
+              width: double.infinity, // Ensure image covers full width
+              fit: BoxFit.cover,
             ),
           ),
           Positioned(
-            top: 0,
-            left: 7,
-            right: 11,
-            child: Visibility(
-              visible: showNew && showNewLabel,
-              child: GestureDetector(
-                onTap: () {},
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF707070), width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Container(
-                    height: 25,
-                    padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6FDE89),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'New',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+            bottom: 10,
+            left: 10,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                if (subtitle.isNotEmpty)
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                Row(
+                  children: [
+                    Icon(Icons.access_time, color: Colors.white, size: 14),
+                    SizedBox(width: 4),
+                    Text(
+                      duration,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
@@ -210,205 +242,15 @@ class _SelectFlatState extends State<SelectFlat> {
     );
   }
 
-  Widget _buildDropdownButton() {
+  // Build the dots indicator
+  Widget buildDot({required int index}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      height: 30, // Adjust the height as needed
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      width: 8.0,
+      height: 8.0,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.grey[400]!, // Border color
-          width: 1.0, // Border width
-        ),
-      ),
-      child: DropdownButton<String>(
-        value: 'A-402',
-        items: <String>['A-402', 'B-201', 'C-101'].map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        underline: const SizedBox.shrink(),
-        onChanged: (newValue) {},
-      ),
-    );
-  }
-
-  Widget _buildVisitorSection() {
-    return SizedBox(
-      width: double.infinity,
-      height: 170,
-      child: Card(
-        color: Colors.white,
-        elevation: 8,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              const Text(
-                'Your Visitor',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF5D5D5D),
-                ),
-              ),
-              const SizedBox(height: 25),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildVisitorButton(
-                      'assets/images/icon.png',
-                      'Daily\nHelp',
-                      const Color(0xFFF7C51E),
-                      () {},
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildVisitorButton(
-                      'assets/images/preapprove.png',
-                      'Pre\nApprove',
-                      const Color(0xFFF7C51E),
-                      () {
-                         Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ShareDetailsDialog()),
-                              );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVisitorButton(
-    String imagePath, String title, Color buttonColor, Function() onPressed) {
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: [
-        Container(
-          width: double.infinity,
-          height: 69,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: const Color(0xFF707070),
-              width: 1.0,
-            ),
-          ),
-          child: InkWell(
-            onTap: onPressed,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 59.0), // Adjust left padding for the image
-              child: Center(
-                child: Text(
-                  title,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 9, // Adjust positioning of the image within the button
-          child: InkWell(
-            onTap: onPressed,
-            child: Container(
-              width: 59,
-              height: 53,
-              decoration: BoxDecoration(
-                color: buttonColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(0xFF707070),
-                  width: 1.0,
-                ),
-              ),
-              child: Center(
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.fill,
-                  width: 36.67,
-                  height: 36.24,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServicesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Text(
-            'Our Services',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF5D5D5D),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildServiceItem('Notices', 'assets/images/Group_2872.png', () {}),
-            _buildServiceItem('Help Desk', 'assets/images/Group_2873.png', () {}),
-            _buildServiceItem('Cntry Dlyt', 'assets/images/Group_2874.png', () {}),
-            _buildServiceItem('Salon', 'assets/images/Group_2875.png', () {}),
-            _buildServiceItem('Amenities', 'assets/images/Group_2876.png', () {}),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceItem(String title, String imagePath, VoidCallback onPressed) {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: onPressed,
-        splashColor: Colors.grey.withOpacity(0.5),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                imagePath,
-                width: 55,
-                height: 55,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF707070),
-                fontWeight: FontWeight.w900,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+        shape: BoxShape.circle,
+        color: _currentPageIndex == index ? Colors.white : Colors.white.withOpacity(0.5),
       ),
     );
   }
@@ -478,7 +320,7 @@ class _SelectFlatState extends State<SelectFlat> {
     ];
 
     return Container(
-      width: maxWidth - 32,
+      width: maxWidth * 0.6, // Adjusted width for visibility
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(35),
@@ -496,10 +338,60 @@ class _SelectFlatState extends State<SelectFlat> {
       ),
     );
   }
+
+ Widget bicepsExerciseCard(String title, String duration, String imagePath) {
+  return Container(
+    width: 250, // Set fixed width to show image partially
+    margin: const EdgeInsets.symmetric(horizontal: 8),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15),
+      color: Colors.black26,
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          right: 0, // Align image to the right
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.asset(
+              imagePath,
+              width: 120, // Fixed width for the image
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 10,
+          left: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10), // Add space between title and duration
+              Row(
+                children: [
+                  Icon(Icons.access_time, color: Colors.white, size: 14),
+                  SizedBox(width: 4),
+                  Text(
+                    duration,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
-void main() {
-  runApp(const MaterialApp(
-    home: SelectFlat(),
-  ));
 }

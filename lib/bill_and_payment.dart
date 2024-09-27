@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'select_flat.dart';
 import 'society.dart';
 
 class BillAndPayment extends StatefulWidget {
@@ -93,10 +92,7 @@ class _BillAndPaymentState extends State<BillAndPayment> {
                             height: 55,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const SelectFlat()),
-                              );
+                              
                                 
                               },
                               style: ElevatedButton.styleFrom(

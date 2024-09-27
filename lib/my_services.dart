@@ -41,15 +41,14 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Display cards
-              Expanded(
+                Expanded(
                 child: ListView.builder(
                   itemCount: _cardVisibility.length,
                   itemBuilder: (context, index) {
-                    if (!_cardVisibility[index]) return const SizedBox.shrink(); // Skip invisible cards
+                    if (!_cardVisibility[index]) return const SizedBox.shrink();
 
                     return Card(
-                      elevation: 4, // Adds shadow to the card
+                      elevation: 4,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -63,7 +62,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                                 Row(
                                   children: [
                                     const CircleAvatar(
-                                      backgroundImage: AssetImage('assets/images/maid28.png'), // Replace with your image asset
+                                      backgroundImage: AssetImage('assets/images/maid28.png'),
                                       radius: 40,
                                     ),
                                     const SizedBox(width: 16),
@@ -82,7 +81,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                                             Container(
                                               decoration: BoxDecoration(
                                                 color: Colors.red,
-                                                borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
+                                                borderRadius: BorderRadius.circular(15.0),
                                               ),
                                               child: const SizedBox(
                                                 height: 25,
@@ -162,9 +161,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.notifications, color: Colors.grey[600]),
-                                  onPressed: () {
-                                    // Add your bell icon functionality here
-                                  },
+                                  onPressed: () {},
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete, color: Colors.red),
@@ -186,8 +183,8 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
                   ),
-                  minimumSize: const Size(200, 50), // Adjust the width as needed
-                  padding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 40.0), // Adjust padding to control width
+                  minimumSize: const Size(200, 50),
+                  padding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 40.0),
                 ),
                 onPressed: () {
                   Navigator.push(

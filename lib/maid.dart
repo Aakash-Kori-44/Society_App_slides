@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'task2.dart';
+import 'task3.dart';
+import 'gate_pass.dart';
 
 class Maid extends StatefulWidget {
   const Maid({super.key});
@@ -62,12 +65,20 @@ class _MaidState extends State<Maid> {
         backgroundColor: Colors.yellow[600],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const gate_pass()),
+                  );
+          },
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white, size: 30),
-            onPressed: () {},
+            onPressed: () { Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BiometricAuthPage()),
+                  );},
           ),
         ],
       ),
@@ -209,7 +220,12 @@ class _MaidState extends State<Maid> {
 
   Widget _buildFilterButton(IconData icon, String label, Size screenSize) {
     return TextButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+      },
       icon: Icon(icon, color: Colors.black, size: screenSize.width * 0.05),
       label: Text(label, style: TextStyle(color: Colors.black, fontSize: screenSize.width * 0.04)),
     );
